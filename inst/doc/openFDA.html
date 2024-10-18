@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>openFDA</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">openFDA</h1>
+
+
+
+<p>Using <code>{openFDA}</code> can be a breeze, if you know how to
+construct good queries. This short guide will get you started with
+<code>{openFDA}</code>, and show you how to put together more
+complicated queries.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(openFDA)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">set_api_key</span>(<span class="st">&quot;tvzdUXoC3Yi21hhxtKKochJlQgm6y1Lr7uhmjcpT&quot;</span>)</span></code></pre></div>
+<div id="the-openfda-api" class="section level1">
+<h1>The openFDA API</h1>
+<p>The openFDA API makes public FDA data available from a simple, public
+API. Users of this API have access to FDA data on food, human and
+veterinary drugs, devices, and more. You can read all about it at their
+<a href="https://open.fda.gov/">website</a>.</p>
+</div>
+<div id="a-simple-openfda-query" class="section level1">
+<h1>A simple openFDA query</h1>
+<p>The simplest way to query the openFDA API is to identify the
+<strong>endpoint</strong> you want to use and provide other search
+terms. For example, this snippet retrieves 1 record about
+<strong>adverse events</strong> in the <strong>drugs</strong> endpoint.
+The empty search string (<code>&quot;&quot;</code>) means the results will be
+non-specific.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>search <span class="ot">&lt;-</span> <span class="fu">openFDA</span>(<span class="at">search =</span> <span class="st">&quot;&quot;</span>, <span class="at">endpoint =</span> <span class="st">&quot;drug-event&quot;</span>, <span class="at">limit =</span> <span class="dv">1</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>search</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt; &lt;httr2_response&gt;</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; GET https://api.fda.gov/drug/event.json?api_key=[API_KEY]&amp;search=&amp;limit=1</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; Status: 200 OK</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; Content-Type: application/json</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; Body: In memory (1819 bytes)</span></span></code></pre></div>
+<div id="openfda-results" class="section level2">
+<h2>openFDA results</h2>
+<p>The function returns an <code>{httr2}</code> response object, with
+attached JSON data. We use <code>httr2::resp_body_json()</code> to
+extract the underlying data.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>json <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(search)</span></code></pre></div>
+<p>If you don’t specify a field to <code>count</code> on, the JSON data
+has two sections - <code>meta</code> and <code>results</code>.</p>
+<div id="meta" class="section level3">
+<h3>Meta</h3>
+<p>The <code>meta</code> section has important metadata on your results,
+which includes:</p>
+<ul>
+<li><code>disclaimer</code> - An important disclaimer regarding the data
+provided by openFDA.</li>
+<li><code>license</code> - A webpage with license terms that govern the
+openFDA API.</li>
+<li><code>last_updated</code> - The last date when this openFDA endpoint
+was updated.</li>
+<li><code>results.skip</code> - How many results were skipped? Set by
+the <code>skip</code> parameter in <code>openFDA()</code>.</li>
+<li><code>results.limit</code> - How many results were retrieved? Set by
+the <code>limit</code> parameter in <code>openFDA()</code>.</li>
+<li><code>results.total</code> - How many results were there in total
+matching your <code>search</code> criteria?</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>json<span class="sc">$</span>meta</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt; $disclaimer</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Do not rely on openFDA to make decisions regarding medical care. While we make every effort to ensure that data is accurate, you should assume all results are unvalidated. We may limit or otherwise restrict your access to the API in line with our Terms of Service.&quot;</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; $terms</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; [1] &quot;https://open.fda.gov/terms/&quot;</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; $license</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; [1] &quot;https://open.fda.gov/license/&quot;</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt; $last_updated</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2024-07-30&quot;</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#&gt; $results</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co">#&gt; $results$skip</span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co">#&gt; [1] 0</span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="co">#&gt; $results$limit</span></span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a><span class="co">#&gt; $results$total</span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a><span class="co">#&gt; [1] 18029782</span></span></code></pre></div>
+</div>
+<div id="results" class="section level3">
+<h3>Results</h3>
+<p>For non-<code>count</code> queries, this will be a set of records
+which were found in the endpoint and match your <code>search</code>
+term.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>json<span class="sc">$</span>results</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; [[1]]</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt; [[1]]$safetyreportid</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;5801206-7&quot;</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt; [[1]]$transmissiondateformat</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt; [1] &quot;102&quot;</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; [[1]]$transmissiondate</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; [1] &quot;20090109&quot;</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>....</span></code></pre></div>
+</div>
+<div id="results-when-count-ing" class="section level3">
+<h3>Results when <code>count</code>-ing</h3>
+<p>If you set the <code>count</code> query, then the openFDA API will
+not return full records. Instead, it will count the number of records
+for each member in the openFDA field you specified for
+<code>count</code>. For example, let’s look at drug manufacturers in the
+<a href="https://open.fda.gov/apis/drug/drugsfda/">Drugs@FDA
+endpoint</a> for <code>&quot;paracetamol&quot;</code>. We’ll use the
+<code>limit</code> parameter to limit our results to the first 3 drug
+manufacturers found.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>count <span class="ot">&lt;-</span> <span class="fu">openFDA</span>(<span class="at">search =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>                 <span class="at">endpoint =</span> <span class="st">&quot;drug-drugsfda&quot;</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>                 <span class="at">limit =</span> <span class="dv">3</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>                 <span class="at">count =</span> <span class="st">&quot;openfda.manufacturer_name.exact&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">resp_body_json</span>()</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>count<span class="sc">$</span>results</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt; [[1]]</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt; [[1]]$term</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Aurobindo Pharma Limited&quot;</span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co">#&gt; [[1]]$count</span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co">#&gt; [1] 393</span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="co">#&gt; [[2]]</span></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a><span class="co">#&gt; [[2]]$term</span></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Zydus Lifesciences Limited&quot;</span></span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a><span class="co">#&gt; [[2]]$count</span></span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a><span class="co">#&gt; [1] 326</span></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a><span class="co">#&gt; [[3]]</span></span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a><span class="co">#&gt; [[3]]$term</span></span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Hikma Pharmaceuticals USA Inc.&quot;</span></span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a><span class="co">#&gt; [[3]]$count</span></span>
+<span id="cb7-28"><a href="#cb7-28" tabindex="-1"></a><span class="co">#&gt; [1] 318</span></span></code></pre></div>
+<p>You can count on fields with a date to create a time series, as
+demonstrated on the <a href="https://open.fda.gov/apis/timeseries/">openFDA website</a>.</p>
+</div>
+</div>
+</div>
+<div id="using-search-terms" class="section level1">
+<h1>Using search terms</h1>
+<p>We can increase the complexity of our query using the
+<code>search</code> parameter, which lets us search against specific
+openFDA API fields. These fields are harmonised to different degrees in
+each API, which you will need to check <a href="https://open.fda.gov/apis/openfda-fields/">online</a>.</p>
+<div id="searching-on-one-field" class="section level2">
+<h2>Searching on one field</h2>
+<p>You can provide search strategies to <code>openFDA()</code> as single
+strings. They are constructed as <code>[FIELD_NAME]:[STRING]</code>,
+where <code>FIELD_NAME</code> is the openFDA field you want to search
+on. If your <code>STRING</code> contains spaces, you must surround it
+with double quotes, or openFDA will search against each word in the
+string. So, for example, a search for drugs with the class
+<code>&quot;thiazide diuretic</code>” should be formatted as
+<code>&quot;openfda.pharm_class_epc:\&quot;thiazide diuretic\&quot;&quot;</code>, or the API
+will collect all drugs which have the words <code>&quot;thiazide&quot;</code> or
+<code>&quot;diuretic&quot;</code> in their established pharmacological class
+(EPC). Let’s do an unrefined search first:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>search_unrefined <span class="ot">&lt;-</span> <span class="fu">openFDA</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="at">search =</span> <span class="st">&quot;openfda.pharm_class_epc:thiazide diuretic&quot;</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">endpoint =</span> <span class="st">&quot;drug-drugsfda&quot;</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="at">limit =</span> <span class="dv">1</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>)</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(search_unrefined)<span class="sc">$</span>meta<span class="sc">$</span>results<span class="sc">$</span>total</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt; [1] 211</span></span></code></pre></div>
+<p>Let’s compare this to our refined search, where we add double-quotes
+around the search term:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>search_refined <span class="ot">&lt;-</span> <span class="fu">openFDA</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="at">search =</span> <span class="st">&quot;openfda.pharm_class_epc:</span><span class="sc">\&quot;</span><span class="st">thiazide diuretic</span><span class="sc">\&quot;</span><span class="st">&quot;</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="at">endpoint =</span> <span class="st">&quot;drug-drugsfda&quot;</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="at">limit =</span> <span class="dv">1</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>)</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(search_refined)<span class="sc">$</span>meta<span class="sc">$</span>results<span class="sc">$</span>total</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co">#&gt; [1] 118</span></span></code></pre></div>
+<p>As you can see, the unrefined search picked up 93 more results, most
+of which would have probably been non-thiazide diuretics.</p>
+</div>
+<div id="searching-on-multiple-fields" class="section level2">
+<h2>Searching on multiple fields</h2>
+<p>The openFDA API lets you search on various fields at once. Simple
+methods for doing this are implemented in <code>{openFDA}</code>.</p>
+<div id="write-your-own-search-term" class="section level3">
+<h3>Write your own search term</h3>
+<p>Using the guides on the <a href="https://open.fda.gov/apis/query-parameters/">openFDA website</a>,
+you can put together your own query. For example, the following query
+looks for up to 5 records which were submitted by Walmart and are taken
+orally. We can use <code>{purrr}</code> functions to extract a brand
+name for each record. Note that though a single record can have multiple
+brand names, we are choosing to only extract the first one.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>search_term <span class="ot">&lt;-</span> <span class="st">&quot;openfda.manufacturer_name:Walmart+AND+openfda.route=oral&quot;</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>search <span class="ot">&lt;-</span> <span class="fu">openFDA</span>(<span class="at">search =</span> search_term,</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>                  <span class="at">limit =</span> <span class="dv">5</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>                  <span class="at">endpoint =</span> <span class="st">&quot;drug-drugsfda&quot;</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>json <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(search)</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">map</span>(json<span class="sc">$</span>results, <span class="at">.f =</span> \(x) {</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">pluck</span>(x, <span class="st">&quot;openfda&quot;</span>, <span class="st">&quot;brand_name&quot;</span>, <span class="dv">1</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>})</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co">#&gt; [[1]]</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="co">#&gt; [1] &quot;FOSTER AND THRIVE NICOTINE&quot;</span></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a><span class="co">#&gt; [[2]]</span></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="co">#&gt; [1] &quot;COUNTERACT ALLERGY&quot;</span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a><span class="co">#&gt; [[3]]</span></span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a><span class="co">#&gt; [1] &quot;IBUPROFEN 200 MG AND DIPHENHYDRAMINE CITRATE 38 MG&quot;</span></span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a><span class="co">#&gt; [[4]]</span></span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a><span class="co">#&gt; [1] &quot;PURELAX&quot;</span></span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a><span class="co">#&gt; [[5]]</span></span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a><span class="co">#&gt; [1] &quot;OMEPRAZOLE&quot;</span></span></code></pre></div>
+</div>
+<div id="let-openfda-construct-the-search-term" class="section level3">
+<h3>Let <code>openFDA()</code> construct the search term</h3>
+<p>You can let the package do the heavy lifting for you with
+<code>openFDA()</code>, by providing a named character vector with many
+field/search term pairs to the <code>search</code> parameter. The
+function will automatically add double quotes (<code>&quot;&quot;</code>) around
+your search terms, if you’re providing field/value pairs like this.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>search <span class="ot">&lt;-</span> <span class="fu">openFDA</span>(<span class="at">search =</span> <span class="fu">c</span>(<span class="st">&quot;openfda.generic_name&quot;</span> <span class="ot">=</span> <span class="st">&quot;amoxicillin&quot;</span>),</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>                  <span class="at">endpoint =</span> <span class="st">&quot;drug-drugsfda&quot;</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(search)<span class="sc">$</span>meta<span class="sc">$</span>results<span class="sc">$</span>total</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co">#&gt; [1] 58</span></span></code></pre></div>
+<p>You can include as many fields as you like, as long as you only
+provide each field once. By default, the terms are combined with an
+<code>OR</code> operator in <code>openFDA()</code>. The below search
+strategy will therefore pick up all entries in <a href="https://open.fda.gov/apis/drug/drugsfda/">Drugs@FDA</a> which are
+taken by mouth.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>search <span class="ot">&lt;-</span> <span class="fu">openFDA</span>(<span class="at">search =</span> <span class="fu">c</span>(<span class="st">&quot;openfda.generic_name&quot;</span> <span class="ot">=</span> <span class="st">&quot;amoxicillin&quot;</span>,</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>                             <span class="st">&quot;openfda.route&quot;</span> <span class="ot">=</span> <span class="st">&quot;oral&quot;</span>),</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>                  <span class="at">endpoint =</span> <span class="st">&quot;drug-drugsfda&quot;</span>, <span class="at">limit =</span> <span class="dv">1</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(search)<span class="sc">$</span>meta<span class="sc">$</span>results<span class="sc">$</span>total</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="co">#&gt; [1] 6929</span></span></code></pre></div>
+</div>
+<div id="pre-construct-a-search-term" class="section level3">
+<h3>Pre-construct a search term</h3>
+<p>To apply multiple search terms with <code>AND</code> operators, use
+<code>format_search_term()</code> with <code>mode = &quot;and&quot;</code>:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>search_term <span class="ot">&lt;-</span> <span class="fu">format_search_term</span>(<span class="fu">c</span>(<span class="st">&quot;openfda.generic_name&quot;</span> <span class="ot">=</span> <span class="st">&quot;amoxicillin&quot;</span>,</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>                                    <span class="st">&quot;openfda.route&quot;</span> <span class="ot">=</span> <span class="st">&quot;oral&quot;</span>),</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>                                  <span class="at">mode =</span> <span class="st">&quot;and&quot;</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>search <span class="ot">&lt;-</span> <span class="fu">openFDA</span>(<span class="at">search =</span> search_term,</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>                  <span class="at">endpoint =</span> <span class="st">&quot;drug-drugsfda&quot;</span>, <span class="at">limit =</span> <span class="dv">1</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(search)<span class="sc">$</span>meta<span class="sc">$</span>results<span class="sc">$</span>total</span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#&gt; [1] 54</span></span></code></pre></div>
+</div>
+</div>
+<div id="wildcards" class="section level2">
+<h2>Wildcards</h2>
+<p>You can use the wildcard character <code>&quot;*&quot;</code> to match zero or
+more characters. For example, we could take the prototypical ending to a
+common drug class - e.g. the <strong>sartans</strong>, which are
+angiotensin-II receptor blockers - and see which manufacturers are most
+represented in <a href="mailto:Drugs@FDA" class="email">Drugs@FDA</a>
+for this class. When using wildcards, either pre-format the string
+yourself <em>without double-quotes</em> or use
+<code>format_search_term()</code> with <code>exact = FALSE</code>. If
+you try to search with both double-quotes and the wildcard character,
+you will get a 404 error from openFDA.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>search_term <span class="ot">&lt;-</span> <span class="fu">format_search_term</span>(<span class="fu">c</span>(<span class="st">&quot;openfda.generic_name&quot;</span> <span class="ot">=</span> <span class="st">&quot;*sartan&quot;</span>),</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>                                  <span class="at">exact =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>search <span class="ot">&lt;-</span> <span class="fu">openFDA</span>(<span class="at">search =</span> search_term,</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>                  <span class="at">count =</span> <span class="st">&quot;openfda.manufacturer_name.exact&quot;</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>                  <span class="at">endpoint =</span> <span class="st">&quot;drug-drugsfda&quot;</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>                  <span class="at">limit =</span> <span class="dv">5</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>terms <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>  <span class="at">.x =</span> httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(search)<span class="sc">$</span>results,</span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>  <span class="at">.f =</span> purrr<span class="sc">::</span><span class="fu">pluck</span>(<span class="st">&quot;term&quot;</span>)</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>)</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a>counts <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(</span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a>  <span class="at">.x =</span> httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(search)<span class="sc">$</span>results,</span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a>  <span class="at">.f =</span> purrr<span class="sc">::</span><span class="fu">pluck</span>(<span class="st">&quot;count&quot;</span>)</span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a>)</span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a></span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a><span class="fu">setNames</span>(counts, terms)</span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="co">#&gt; $`Alembic Pharmaceuticals Limited`</span></span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a><span class="co">#&gt; [1] 14</span></span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a><span class="co">#&gt; $`Alembic Pharmaceuticals Inc.`</span></span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a><span class="co">#&gt; [1] 13</span></span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a><span class="co">#&gt; $`Aurobindo Pharma Limited`</span></span>
+<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a><span class="co">#&gt; [1] 13</span></span>
+<span id="cb14-25"><a href="#cb14-25" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-26"><a href="#cb14-26" tabindex="-1"></a><span class="co">#&gt; $`Macleods Pharmaceuticals Limited`</span></span>
+<span id="cb14-27"><a href="#cb14-27" tabindex="-1"></a><span class="co">#&gt; [1] 11</span></span>
+<span id="cb14-28"><a href="#cb14-28" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-29"><a href="#cb14-29" tabindex="-1"></a><span class="co">#&gt; $`Zydus Lifesciences Limited`</span></span>
+<span id="cb14-30"><a href="#cb14-30" tabindex="-1"></a><span class="co">#&gt; [1] 11</span></span></code></pre></div>
+<p>It looks like <code>&quot;Alembic Pharmaceuticals&quot;</code> is very active
+in this space - interesting!</p>
+</div>
+</div>
+<div id="other-openfda-api-features" class="section level1">
+<h1>Other openFDA API features</h1>
+<p>This short guide does not cover all aspects of openFDA. It is
+recommended that you go to the <a href="https://open.fda.gov/apis/">openFDA API website</a> and check out
+the resources there to see information on:</p>
+<ul>
+<li><a href="https://open.fda.gov/apis/dates-and-ranges/">Date ands
+ranges</a></li>
+<li><a href="https://open.fda.gov/apis/missing-values/">Search for
+fields with missing values</a></li>
+<li><a href="https://open.fda.gov/apis/timeseries/">Generating time
+series</a></li>
+<li><a href="https://open.fda.gov/apis/paging/">Paging larger
+queries</a></li>
+</ul>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
